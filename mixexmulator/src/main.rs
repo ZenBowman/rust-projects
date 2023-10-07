@@ -23,7 +23,7 @@ struct MixWord {
 // lower order byte.
 // Big endian order (as in TAOCP).
 fn doublebyte_value(byte0: &MixByte, byte1: &MixByte) -> u16 {
-    let mut result:u16 = byte0.bits as u16;
+    let mut result: u16 = byte0.bits as u16;
     result = (result << 6) | (byte1.bits as u16);
     result
 }
@@ -47,9 +47,8 @@ fn get_bit_at_index(byte: &MixByte, index: u8) -> u8 {
 }
 
 fn print_bits(byte: &MixByte) {
-    println!(
-        "{} = \t{} | {} | {} | {} | {} | {}",
-        byte.bits,
+    print!(
+        "{} | {} | {} | {} | {} | {}",
         get_bit_at_index(&byte, 0),
         get_bit_at_index(&byte, 1),
         get_bit_at_index(&byte, 2),
@@ -59,22 +58,40 @@ fn print_bits(byte: &MixByte) {
     );
 }
 
+fn byte(value: u8) -> MixByte {
+    assert!(value <= 63);
+    MixByte { bits: value }
+}
+
+fn print_doublebyte(byte0: &MixByte, byte1: &MixByte) {
+    let val = doublebyte_value(byte0, byte1);
+    print!("{} = ", val);
+    print_bits(byte0);
+    print!(" || ");
+    print_bits(byte1);
+}
+
 fn main() {
     println!("First we print a few random bytes");
     for _i in 1..10 {
-        let x = MixByte {
-            bits: rand::random::<u8>() % 63,
-        };
+        let x = byte(rand::random::<u8>() % 63);
+        print!("{} = \t", x.bits);
         print_bits(&x);
+        println!()
     }
 
     println!("----------------------------");
     println!("Then we print some doublebytes");
     let x = MixByte { bits: 0 };
     let y = MixByte { bits: 1 };
-    println!("{}", doublebyte_value(&x, &y));
-    println!("{}", doublebyte_value(&y, &x));
+    print_doublebyte(&x, &y);
+    println!();
+    print_doublebyte(&x, &x);
+    println!();
+    print_doublebyte(&y, &x);
+    println!();
 
-    let max_x = MixByte { bits: 63 };
-    println!("{}", doublebyte_value(&max_x, &max_x));
+    let max_x = byte(63);
+    print_doublebyte(&max_x, &max_x);
+    println!()
 }
