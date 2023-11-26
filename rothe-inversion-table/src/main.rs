@@ -37,6 +37,8 @@ impl RotheInversionTable {
 
     fn draw(&self) {
         for i in 0..self.dimension {
+            // The examples in TAOCP are all 1-indexed, but rust vectors are zero indexed,
+            // so we add 1 to each element before displaying.
             print!("\t{0}", i + 1);
         }
         println!();
@@ -83,7 +85,7 @@ impl RotheInversionTable {
         }
 
         // Now we move downward from the cell, and look for a dot. At this point, if there is a dot in the same column,
-	// we have an inversion.
+        // we have an inversion.
         for iprime in i..self.dimension {
             if (self.get(iprime, j) == RotheInversionElem::Dot) {
                 return true;
@@ -134,7 +136,7 @@ fn main() {
         let perm = Permutation {
             elements: vec![5, 4, 3, 2, 1],
         };
-	
+
         let table = create_inversion_table(perm);
         table.draw();
     }
@@ -155,5 +157,5 @@ fn main() {
         };
         let table = create_inversion_table(perm);
         table.draw();
-    } 
+    }
 }
